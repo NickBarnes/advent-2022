@@ -1,6 +1,5 @@
 import sys
 import os
-import re
 from enum import Enum
 
 # rock paper scissors. Wow, this was horrible.
@@ -14,6 +13,7 @@ W = Outcome.Win
 D = Outcome.Draw
 L = Outcome.Lose
 
+# What's the outcome of a game?
 result = {(R,R): D,
           (R,P): L,
           (R,S): W,
@@ -25,6 +25,7 @@ result = {(R,R): D,
           (S,S): D,
 }
 
+# Given an opponent's play, and a desired outcome, what play should I make?
 choose = {(R,W): P,
           (R,D): R,
           (R,L): S,
@@ -36,6 +37,7 @@ choose = {(R,W): P,
           (S,L): P,
 }
 
+# Each shape has a score, because of course it does.
 shape_score = {R: 1,
                P: 2,
                S: 3,
@@ -51,27 +53,37 @@ opponent = {'A': R,
             'C': S
 }
 
+# in part 1, we think that X/Y/Z indicates R/P/S
 response_A = {'X': R,
               'Y': P,
               'Z': S,
 }
 
+# in part 2, we discover that X/Y/Z actually indicates L/D/W
 response_B = {'X': L,
               'Y': D,
               'Z': W,
 }
 
-strat_re = re.compile('([ABC]) ([XYZ])')
+def round_score(play, other):
+    return result_score[result[(play, other)]] + shape_score[play]
 
 def go(filename):
     print(f"results from {filename}:")
-    written = [strat_re.match(l.strip()).groups() for l in open(filename,'r')]
-    strategy_A = [(opponent[g[0]],response_A[g[1]]) for g in written]
-    scores_A = [result_score[result[(r,o)]]+shape_score[r] for (o,r) in strategy_A]
+    written = [l.strip().split() for l in open(filename,'r')]
+
+    strategy_A = [(opponent[o], response_A[r]) for o,r in written]
+    scores_A = [round_score(r,o) for (o,r) in strategy_A]
     print(f"total score A (answer one) {sum(scores_A)}")
-    strategy_B = [(o,r) for g in written if (o := opponent[g[0]]) if (res := response_B[g[1]]) if (r := choose[(o, res)])]
-    scores_B = [result_score[result[(r,o)]]+shape_score[r] for (o,r) in strategy_B]
+
+    strategy_B = [(o,choose[(o,res)]) for a,b in written
+                  if (o := opponent[a])
+                  if (res := response_B[b])]
+    scores_B = [round_score(r,o) for (o,r) in strategy_B]
     print(f"total score B (answer two) {sum(scores_B)}")
+
+# Daily boilerplate for applying 'go' to files on the command-line or
+# to input.txt if there are none.
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
