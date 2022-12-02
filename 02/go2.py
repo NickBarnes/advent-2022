@@ -29,8 +29,7 @@ def go(filename):
     scores_A = [round_score(r,o) for (o,r) in strategy_A]
     print(f"total score A (answer one) {sum(scores_A)}")
 
-    strategy_B = [(o,choose(o,response_B(b))) for a,b in written
-                  if (o := opponent(a)) is not None] # horrid walrus
+    strategy_B = [(o := opponent(a), choose(o,response_B(b))) for a,b in written]
     scores_B = [round_score(r,o) for (o,r) in strategy_B]
     print(f"total score B (answer two) {sum(scores_B)}")
 
