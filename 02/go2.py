@@ -1,37 +1,42 @@
 # R=0, P=1, S=2
 # W=1, L=2, D=0
 
+# Consistent use of variable names: we play 'a', opponent plays 'b',
+# outcome is 'o'.
+
 # if we play 'a' and the opponent plays b, what's the outcome?
 def outcome(a,b): return (a-b) % 3
 
-# if the opponent plays `a` and we want outcome `o`, what should we play?
-def choose(a,o): return (o+a) % 3
-def shape_score(s): return s+1
-def result_score(r): return (r * 3 + 3) % 9
+# if the opponent plays `b` and we want outcome `o`, what should we play?
+def choose(b,o): return (o+b) % 3
+
+# Weird scoring rules
+def shape_score(a): return a+1
+def outcome_score(a, b): return (outcome(a,b) * 3 + 3) % 9
 
 # in both parts 1 and 2, A/B/C indicates R/P/S of the opponent
 def opponent(c): return 'ABC'.index(c)
 
 # in part 1, we think that X/Y/Z indicates R/P/S
-def response_A(c): return 'XYZ'.index(c)
+def xyz_play(c): return 'XYZ'.index(c)
 
 # in part 2, we discover that X/Y/Z actually indicates L/D/W
-def response_B(c): return ('XYZ'.index(c) - 1) % 3
+def xyz_outcome(c): return ('XYZ'.index(c) - 1) % 3
 
-def round_score(play, other):
-    return result_score(outcome(play, other)) + shape_score(play)
+def score(a, b):
+    return outcome_score(a, b) + shape_score(a)
 
 def go(filename):
     print(f"results from {filename}:")
     written = [l.strip().split() for l in open(filename,'r')]
 
-    strategy_A = [(opponent(o), response_A(r)) for o,r in written]
-    scores_A = [round_score(r,o) for (o,r) in strategy_A]
-    print(f"total score A (answer one) {sum(scores_A)}")
+    games_1 = [(opponent(x), xyz_play(y)) for x,y in written]
+    score_1 = sum(score(a,b) for (b,a) in games_1)
+    print(f"total score 1 (answer one) {score_1}")
 
-    strategy_B = [(o := opponent(a), choose(o,response_B(b))) for a,b in written]
-    scores_B = [round_score(r,o) for (o,r) in strategy_B]
-    print(f"total score B (answer two) {sum(scores_B)}")
+    games_2 = ((b := opponent(x), choose(b, xyz_outcome(y))) for x,y in written)
+    score_2 = sum(score(a,b) for (b,a) in games_2)
+    print(f"total score 2 (answer two) {score_2}")
 
 # Daily boilerplate for applying 'go' to files on the command-line or
 # to input.txt if there are none.
