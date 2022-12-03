@@ -2,7 +2,7 @@
 
 # each item is a letter with a value defined like this:
 def val(c):
-    if c >= 'a' and c <= 'z': return ord(c)-ord('a')+1
+    if 'a' <= c <= 'z': return ord(c)-ord('a')+1
     return ord(c)-ord('A')+27
 
 def go(filename):
