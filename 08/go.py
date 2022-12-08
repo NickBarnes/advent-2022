@@ -9,7 +9,6 @@ def visible(trees, i,j):
             all(trees[i][j] > trees[k][j] for k in range(i)))
 
 import itertools
-
 # this should be in itertools
 def takeuntil(iter, c):
     for v in iter:
@@ -17,17 +16,20 @@ def takeuntil(iter, c):
         if c(v):
             break
 
-# are these coordinates in the forest?
-def inbounds(trees, i, j):
-    return i >= 0 and i < len(trees) and j >= 0 and j < len(trees[i])
-
 # How many trees can (i,j) see in direction (di,dj)? This is a bit
 # grody (but much nicer than my first attempt).
 
 def see(trees,i,j,di,dj):
-    view = ((i+di*n,j+dj*n) for n in itertools.count(1)) # indefinite view in that direction
-    all = itertools.takewhile(lambda p: inbounds(trees,p[0],p[1]), view) # within the forest
-    visible = takeuntil(all, lambda x: trees[x[0]][x[1]] >= trees[i][j])
+    # are these coordinates in the forest?
+    def inbounds(p):
+        return p[0] >= 0 and p[0] < len(trees) and p[1] >= 0 and p[1] < len(trees[p[0]])
+    # does this tree block the view?
+    def blocking(p):
+        return trees[p[0]][p[1]] >= trees[i][j]
+    # all the possible locations for trees in this direction, to infinity!
+    view = ((i+di*n,j+dj*n) for n in itertools.count(1))
+    # trees we can see in that direction
+    visible = takeuntil(itertools.takewhile(inbounds, view), blocking)
     return len(list(visible))
 
 def score(trees, i, j):
@@ -36,8 +38,10 @@ def score(trees, i, j):
 def go(filename):
     print(f"results from {filename}:")
     trees = [[int(c) for c in l.strip()] for l in open(filename,'r')]
-    print(sum(1 for i in range(len(trees)) for j in range(len(trees[i])) if visible(trees, i, j)))
-    print(max(score(trees,i,j) for i in range(len(trees)) for j in range(len(trees[i]))))
+    visible_trees = sum(1 for i in range(len(trees)) for j in range(len(trees[i])) if visible(trees, i, j))
+    print(f"Number of visible trees (answer one): {visible_trees}")
+    max_score = max(score(trees,i,j) for i in range(len(trees)) for j in range(len(trees[i])))
+    print(f"Highest scenery score (answer two): {max_score}")
 
 # daily boilerplate for applying 'go' to files on the command-line or
 # to input.txt if there are none.
