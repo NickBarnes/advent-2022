@@ -8,19 +8,27 @@ def visible(trees, i,j):
             all(trees[i][j] > trees[k][j] for k in range(i+1, len(trees))) or
             all(trees[i][j] > trees[k][j] for k in range(i)))
 
-# How many trees can (i,j) see in direction (di,dj)? The logic here is
-# horrible and can surely be improved, but I have convinced myself
-# this can't be done with a comprehension.
+import itertools
+
+# this should be in itertools
+def takeuntil(iter, c):
+    for v in iter:
+        yield v
+        if c(v):
+            break
+
+# are these coordinates in the forest?
+def inbounds(trees, i, j):
+    return i >= 0 and i < len(trees) and j >= 0 and j < len(trees[i])
+
+# How many trees can (i,j) see in direction (di,dj)? This is a bit
+# grody (but much nicer than my first attempt).
 
 def see(trees,i,j,di,dj):
-    h = trees[i][j]
-    score = 0
-    while score == 0 or trees[i][j] < h:
-        i,j = i+di,j+dj
-        if not(i >= 0 and i < len(trees) and j >= 0 and j < len(trees[i])):
-            break
-        score += 1
-    return score
+    view = ((i+di*n,j+dj*n) for n in itertools.count(1)) # indefinite view in that direction
+    all = itertools.takewhile(lambda p: inbounds(trees,p[0],p[1]), view) # within the forest
+    visible = takeuntil(all, lambda x: trees[x[0]][x[1]] >= trees[i][j])
+    return len(list(visible))
 
 def score(trees, i, j):
     return see(trees,i,j,1,0) * see(trees,i,j,-1,0) * see(trees,i,j,0,1) * see(trees,i,j,0,-1)
