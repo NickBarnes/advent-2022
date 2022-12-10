@@ -1,4 +1,4 @@
-# boilerplate for reading a file in different ways. Returns:
+# boilerplate function for reading a file in different ways. Returns:
 # - a list of lists of the lines in each section (separated by blank lines)
 # - a list of the lines in the file
 # - a list of lists of words on each line
@@ -23,17 +23,19 @@ def read(filename):
 def go(filename):
     print(f"results from {filename}:")
     _, _, words, _ = read(filename)
-    grid = [['.' for _ in range(40)] for _ in range(6)]
     cycle = 0
     x = 1
+    # total signal strength
     signal = 0
+    # pixel grid
+    grid = [['.' for _ in range(40)] for _ in range(6)]
 
     def tick():
         nonlocal cycle, signal, grid
-        cycle += 1
-        row = (cycle-1) // 40
-        col = (cycle-1) % 40
-        if col == 19: # offset by one
+        row = cycle // 40
+        col = cycle % 40
+        cycle += 1 # this is now the true cycle number (AoC counters start from 1)
+        if col == 19: # offset by one (AoC counters start from 1)
             signal += x * cycle
         if abs(x-col) < 2:
             grid[row][col]='#'
@@ -42,10 +44,10 @@ def go(filename):
         if line[0] == "noop":
             tick()
         elif line[0] == 'addx':
-            addend = int(line[1])
             tick()
             tick()
-            x += addend
+            x += int(line[1])
+
     print(f"total signal strength (answer one): {signal}")
     print("answer two is these letters:")
     print('\n'.join(''.join(row) for row in grid))
