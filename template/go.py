@@ -23,7 +23,8 @@ def go(filename):
         grid = [int(c) for l in lines for c in l]
     except:
         grid = [[]]
-    run(filename, sections, lines, words, grid)
+    print(f"results from {filename}:")
+    run(sections, lines, words, grid)
 
 # daily boilerplate for applying 'go' to files on the command-line or
 # to input.txt if there are none.
