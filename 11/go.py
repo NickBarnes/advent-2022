@@ -15,8 +15,6 @@ test_re = re.compile('Test: divisible by ([0-9]+)')
 true_re = re.compile('If true: throw to monkey ([0-9]+)')
 false_re = re.compile('If false: throw to monkey ([0-9]+)')
 
-relieving = True
-
 monkeys = {}
 
 # all arithmetic can happen modulo this number (because that's all any
@@ -25,11 +23,8 @@ bigmod = None
 
 class Monkey:
     def __init__(self, spec):
-        self.spec = spec
-        self.id = int(id_re.match(spec[0]).group(1))
-        monkeys[self.id] = self
-        starts = start_re.match(spec[1]).group(1).split(', ')
-        self.items = [int(item) for item in starts]
+        monkeys[int(id_re.match(spec[0]).group(1))] = self
+        self.items = [int(item) for item in start_re.match(spec[1]).group(1).split(', ')]
         left, self.op, right = operation_re.match(spec[2]).group(1).split()
         self.left = None if left == 'old' else int(left)
         self.right = None if right == 'old' else int(right)
@@ -39,22 +34,17 @@ class Monkey:
         self.if_false = int(false_re.match(spec[5]).group(1))
         self.inspections = 0
 
-    def go(self):
+    def go(self, relief):
         for item in self.items:
             self.inspections += 1
-            # perform operation on item, including division
             left = item if self.left is None else self.left
             right = item if self.right is None else self.right
             newitem = (left + right) if self.op == '+' else (left * right)
-            if relieving:
+            if relief:
                 newitem = newitem // 3 # relief
-            newitem = newitem % bigmod
-            test = (newitem % self.divisor) == 0
-            monkeys[self.if_true if test else self.if_false].receive(newitem)
+            newitem = newitem % bigmod # "keep your worry levels manageable"
+            monkeys[self.if_true if (newitem % self.divisor) == 0 else self.if_false].items.append(newitem)
             self.items = []
-
-    def receive(self, item):
-        self.items.append(item)
 
 def read(filename):
     global monkeys, bigmod
@@ -64,12 +54,11 @@ def read(filename):
         bigmod *= Monkey(s).divisor
 
 def action(filename, rounds, relief):
-    global monkeys, relieving
+    global monkeys
     read(filename)
-    relieving = relief
     for r in range(rounds):
         for k in range(len(monkeys)):
-            monkeys[k].go()
+            monkeys[k].go(relief)
 
 def business(k, tag):
     final = sorted(monkeys.values(), key=lambda m: m.inspections)
