@@ -8,18 +8,20 @@ import file
 def go(filename):
     print(f"results from {filename}:")
     chars = file.chars(filename)
-    grid = [[0 if c == 'S' else 25 if c == 'E' else ord(c)-ord('a') for c in row] for row in chars]
     start = next((i, row.index('S')) for i, row in enumerate(chars) if 'S' in row)
     end = next((i, row.index('E')) for i, row in enumerate(chars) if 'E' in row)
 
+    grid = {(i,j): 0 if c == 'S' else 25 if c == 'E' else ord(c)-ord('a')
+            for i, row in enumerate(chars) for j,c in enumerate(row)}
+
     # reachability going down: may climb any amount but not descend more than 1
     def weight(a,b):
-        return 1 if grid[a[0]][a[1]] - grid[b[0]][b[1]] <= 1 else None
+        return 1 if grid[a] - grid[b] <= 1 else None
 
-    far = walk.walk(len(grid), len(grid[0]), weight, end, diagonal=False)
+    far = walk.walk(weight, end, walk.grid(len(chars), len(chars[0])))
 
     print(f"shortest path from start to end is {far[start]}")
-    shortest_climb = min(v for p,v in far.items() if grid[p[0]][p[1]] == 0)
+    shortest_climb = min(v for p,v in far.items() if grid[p] == 0)
     print(f"shortest path from low point to end is {shortest_climb}")
 
 if __name__ == '__main__':
