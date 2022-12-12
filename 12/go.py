@@ -31,7 +31,7 @@ def go(filename):
     while grey:
         d, pos = heapq.heappop(grey)
         r,c = pos
-        if far[pos] <= d: # already seen at shorter distance
+        if far[pos] < d: # already seen at shorter distance
             continue
         d += 1
         for n in reach_neighbours(r,c, grid[r][c]):

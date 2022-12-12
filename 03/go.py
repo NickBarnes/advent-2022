@@ -21,8 +21,8 @@ def go(filename):
     # There's some trick with zip() and iter() to get groups-of-N but
     # I can't remember it off-hand.
     badge_total = sum(val((set(group[0]) & set(group[1]) & set(group[2])).pop())
-                      for group in [rucksacks[i:i+3]
-                                    for i in range(0, len(rucksacks), 3)])
+                      for group in [sacks[i:i+3]
+                                    for i in range(0, len(sacks), 3)])
     print(f"    total badge priority {badge_total} (answer two)")
 
 # Daily boilerplate for applying 'go' to files on the command-line or
