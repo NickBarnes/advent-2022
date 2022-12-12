@@ -28,7 +28,7 @@ def go(filename):
     # total signal strength
     signal = 0
     # pixel grid
-    grid = [['.' for _ in range(40)] for _ in range(6)]
+    grid = [['?' for _ in range(40)] for _ in range(6)]
 
     def tick():
         nonlocal cycle, signal, grid
@@ -37,8 +37,7 @@ def go(filename):
         cycle += 1 # this is now the true cycle number (AoC counters start from 1)
         if col == 19: # offset by one (AoC counters start from 1)
             signal += x * cycle
-        if abs(x-col) < 2:
-            grid[row][col]='#'
+        grid[row][col]= '#' if abs(x-col) < 2 else ' '
 
     for line in words:
         if line[0] == "noop":
