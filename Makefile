@@ -8,6 +8,6 @@ day-%: %/go.py %/test*.txt %/input.txt
 
 .PHONY: clean
 clean:
-	rm *~ */*~
+	rm -rf *~ */*~ */__pycache__
 
 
