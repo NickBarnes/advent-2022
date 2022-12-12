@@ -1,24 +1,22 @@
 import heapq
 
-def walk(weight, start, neighbours):
-    """Find the shortest path in a weighted network from `start` to all
-    other nodes, visiting all neighbours, skipping forbidden
-    neighbours if `weight(node,neighbour)` is None.
+def walk(start, weights):
+    """Find the shortest paths in a weighted network from `start` to all
+    other nodes.
 
     """
     grey = [(0, start)]
-    far = {start: 0}
+    shortest = {start: 0}
 
     while grey:
-        d, pos = heapq.heappop(grey)
-        if far[pos] < d: # already seen at shorter distance
+        d, p = heapq.heappop(grey)
+        if shortest[p] < d: # already seen at shorter distance
             continue
-        for n in neighbours(pos):
-            w = weight(pos, n)
-            if w is not None and (n not in far or far[n] > d + w):
+        for n,w in weights(p):
+            if n not in shortest or shortest[n] > d + w:
                 heapq.heappush(grey, (d + w, n))
-                far[n] = d + w
-    return far
+                shortest[n] = d + w
+    return shortest
 
 def grid(xmax, ymax, diagonal=False):
     """Return a neighbour function for a 2D grid size `xmax` by `ymax`. If
