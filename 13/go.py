@@ -6,7 +6,10 @@ import walk
 import file
 import functools
 
-# This works but feels like cheating
+# This works but feels like cheating. Also I'm really not keen on
+# calling eval on unvalidated input. I guess I could match it against
+# '[\[\],0-9]+' first, as no string matching that could give my
+# computer to a hacker.
 #
 # def make_list(s):
 #     return eval(s)
@@ -14,7 +17,7 @@ import functools
 # So after getting the right answer, I wrote this:
 
 def make_list_inner(s, i=0):
-    """returns list, next character to read"""
+    """returns list, next index to read."""
     l = []
     i += 1 # skipping the '['
     while True:
