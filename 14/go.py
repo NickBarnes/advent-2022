@@ -56,12 +56,40 @@ def go(filename):
                 sy += 1
                 sx += 1
             else:
-                grid[sy][sx] = 'o'
+                grid[sy][sx] = 'x' if overflow else 'o'
                 sand += 1
                 if sy == 0 and sx == 500:
                     print(f"sand fills up infinite void after {sand}")
                     running = False
                 break
+
+    try:
+        from PIL import Image
+        pil = True
+    except:
+        pil = False
+
+    if pil:
+        xrange = xmax - xmin
+        yrange = floor
+        margin = 20
+        
+        color = {' ': (255,255,255,255), # air
+                 'o': (194,178,128,255), # first sand
+                 'x': (240,220,170,255), # second sand
+                 '#': (0,0,255,255),     # wall
+                 '=': (255,0,0,255),     # floor
+                 '?': (0,255,0,255),     # wut?
+        }
+        from collections import Counter
+        im = Image.new('RGBA', (xrange+2 * margin, yrange + 2*margin))
+        for x in range(xrange):
+            for y in range(yrange+1):
+                c = grid[y][x+xmin]
+                pix = color.get(c, color['?'])
+                im.putpixel((x + margin, y+margin), pix)
+        im2 = im.resize((im.size[0]*4, im.size[1]*4), Image.Resampling.BOX)
+        im2.show()
 
 if __name__ == '__main__':
     for f in file.files(__file__):
