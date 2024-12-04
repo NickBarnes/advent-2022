@@ -19,14 +19,10 @@ def go(filename):
     c2 = sum(1 for v in values if overlap(*v))
     print(f"pairs partly overlap (answer two) {c2}")
 
-# daily boilerplate for applying 'go' to files on the command-line or
-# to input.txt if there are none.
+# daily boilerplate for applying 'go' to files on the command-line.
 
 import sys
-import os
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))

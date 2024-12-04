@@ -67,7 +67,7 @@ class Blueprint:
                         # try to improve cache hit by throwing away excess resources
                         # (any more than we could possibly use in the time remaining)
                         # this made my solution about ten times faster by improving cache hit rate,
-                        # but test.txt is still hopelessly slow (input.txt is OK).
+                        # but test.txt is still hopelessly slow (actual puzzle input is OK).
                         if i < 3:
                             new_resources[i] = min(new_resources[i], self.max_robots[i] * new_time)
                     new_robots = robots[:]

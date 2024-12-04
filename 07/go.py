@@ -68,14 +68,10 @@ def go(filename):
     print(f"size of best dir to delete (answer two): {best_dir.total()}")
     
 
-# daily boilerplate for applying 'go' to files on the command-line or
-# to input.txt if there are none.
+# daily boilerplate for applying 'go' to files on the command-line.
 
 import sys
-import os
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))

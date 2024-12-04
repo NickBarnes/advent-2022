@@ -42,14 +42,10 @@ def go(filename):
         move(a,b,n)
     done("N crates at a time")
 
-# daily boilerplate for applying 'go' to files on the command-line or
-# to input.txt if there are none.
+# daily boilerplate for applying 'go' to files on the command-line.
 
 import sys
-import os
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))

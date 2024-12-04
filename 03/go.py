@@ -25,14 +25,10 @@ def go(filename):
                                     for i in range(0, len(sacks), 3)])
     print(f"    total badge priority {badge_total} (answer two)")
 
-# Daily boilerplate for applying 'go' to files on the command-line or
-# to input.txt if there are none.
+# Daily boilerplate for applying 'go' to files on the command-line.
 
 import sys
-import os
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))

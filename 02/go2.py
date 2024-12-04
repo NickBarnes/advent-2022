@@ -41,14 +41,10 @@ def go(filename):
     score_2 = sum(score(a,b) for b,a in games_2)
     print(f"total score 2 (answer two) {score_2}")
 
-# Daily boilerplate for applying 'go' to files on the command-line or
-# to input.txt if there are none.
+# Daily boilerplate for applying 'go' to files on the command-line.
 
 import sys
-import os
 
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))

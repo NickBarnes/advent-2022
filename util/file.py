@@ -5,8 +5,6 @@ import os
 def files(file = None):
     if len(sys.argv) > 1:
         return sys.argv[1:]
-    else:
-        return os.path.join(file, 'input.txt')
 
 def lines(filename):
     return [l.strip() for l in open(filename,'r') if l]

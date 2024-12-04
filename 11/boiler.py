@@ -1,13 +1,10 @@
 # Boilerplate to support Advent of Code hackery
 
 import sys
-import os
 
 def files():
     if len(sys.argv) > 1:
         return sys.argv[1:]
-    else:
-        return os.path.join(os.path.dirname(__file__), 'input.txt')
 
 def lines(filename):
     return [l.strip() for l in open(filename,'r') if l]

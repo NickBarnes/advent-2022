@@ -1,5 +1,4 @@
 import sys
-import os
 
 def go(filename):
     print(f"results from {filename}:")
@@ -11,5 +10,3 @@ def go(filename):
 if len(sys.argv) > 1:
     for arg in sys.argv[1:]:
         go(arg)
-else:
-    go(os.path.join(os.path.dirname(__file__), 'input.txt'))
